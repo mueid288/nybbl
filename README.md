@@ -20,17 +20,75 @@ A beautiful CLI tool for teams to track hours, log standups, and stay in sync �
 
 ## 🚀 Install
 
+### Prerequisites
+
+- **Node.js** v18 or higher — [download here](https://nodejs.org/)
+- **Git** — [download here](https://git-scm.com/downloads)
+
+Verify both are installed:
 ```bash
+node -v   # should show v18+
+git -v    # should show git version
+```
+
+---
+
+### macOS
+
+**Option A — Recommended (no sudo needed):**
+```bash
+mkdir -p ~/.npm-global
+npm config set prefix '~/.npm-global'
+echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.zshrc
+source ~/.zshrc
 npm install -g github:mueid288/nybbl
 ```
 
-Then just run:
+**Option B — Quick (requires sudo):**
+```bash
+sudo npm install -g github:mueid288/nybbl
+```
+
+---
+
+### Windows
+
+Open **PowerShell as Administrator** and run:
+```powershell
+npm install -g github:mueid288/nybbl
+```
+
+> **Tip:** If you get an execution policy error, run this first:
+> ```powershell
+> Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+> ```
+
+---
+
+### Linux
+
+```bash
+sudo npm install -g github:mueid288/nybbl
+```
+
+Or without sudo (recommended):
+```bash
+mkdir -p ~/.npm-global
+npm config set prefix '~/.npm-global'
+echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bashrc
+source ~/.bashrc
+npm install -g github:mueid288/nybbl
+```
+
+---
+
+### First Run
 
 ```bash
 nybbl
 ```
 
-The setup wizard handles everything — name, handle, and auto-cloning the shared data repo.
+The setup wizard will ask for your name, handle, and automatically clone the shared data repo. Your config is saved to `~/.nybblrc`.
 
 ## 📸 Dashboard
 
