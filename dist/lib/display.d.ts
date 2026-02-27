@@ -1,0 +1,24 @@
+import Table from 'cli-table3';
+import { Ora } from 'ora';
+export declare const LOGO_LINES: string[];
+export declare function printLogo(version?: string): void;
+export declare function printSuccess(message: string): void;
+export declare function printError(message: string): void;
+export declare function printWarning(message: string): void;
+export declare function printDivider(label?: string): void;
+export declare function createTable(head: string[]): Table.Table;
+export declare function printBox(title: string, message: string): void;
+export declare function printHeader(emoji: string, text: string): void;
+export declare function createSpinner(text: string): Ora;
+export declare function formatStreak(streak: number): string;
+export declare function getWelcomeMessage(handle: string): string;
+export declare function formatElapsedTimer(startTime: string): string;
+export declare function getMemberColor(handle: string): string;
+export declare function colorMember(handle: string, isMe?: boolean): string;
+export declare function printStatusBar(parts: string[]): void;
+export declare function printSectionBox(title: string, content: string, borderColor?: string): void;
+export declare function menuSeparator(label: string): {
+    name: string;
+    value: string;
+    disabled: string;
+};

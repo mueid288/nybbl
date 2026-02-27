@@ -9,9 +9,8 @@
     "nybbl": "./bin/run.js"
   },
   "scripts": {
-    "build": "rm -rf dist && tsc -b",
+    "build": "npx -y rimraf dist && tsc -b",
     "clean": "rm -rf dist",
-    "prepare": "npm run build",
     "prepack": "npm run build && oclif manifest"
   },
   "engines": {

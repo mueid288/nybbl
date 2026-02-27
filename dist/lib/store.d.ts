@@ -1,0 +1,14 @@
+import { Job, Member, Assignment, TimeEntry, PulseUpdate, TeamConfig } from '../types/index.js';
+export declare function getJobs(): Promise<Job[]>;
+export declare function saveJobs(jobs: Job[]): Promise<void>;
+export declare function getMembers(): Promise<Member[]>;
+export declare function saveMembers(members: Member[]): Promise<void>;
+export declare function getAssignments(): Promise<Assignment[]>;
+export declare function saveAssignments(assignments: Assignment[]): Promise<void>;
+export declare function getTimelogs(handle: string): Promise<TimeEntry[]>;
+export declare function getAllTimelogs(): Promise<TimeEntry[]>;
+export declare function saveTimelogs(handle: string, logs: TimeEntry[]): Promise<void>;
+export declare function getUpdates(date: string): Promise<PulseUpdate[]>;
+export declare function saveUpdates(date: string, updates: PulseUpdate[]): Promise<void>;
+export declare function getTeamConfig(): Promise<TeamConfig | null>;
+export declare function saveTeamConfig(config: TeamConfig): Promise<void>;
