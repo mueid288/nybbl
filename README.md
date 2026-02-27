@@ -25,62 +25,25 @@ A beautiful CLI tool for teams to track hours, log standups, and stay in sync �
 - **Node.js** v18 or higher — [download here](https://nodejs.org/)
 - **Git** — [download here](https://git-scm.com/downloads)
 
-Verify both are installed:
+### macOS / Linux
+
 ```bash
-node -v   # should show v18+
-git -v    # should show git version
+git clone https://github.com/mueid288/nybbl.git
+cd nybbl
+npm install
+npm run build
+npm link
 ```
 
----
+### Windows (PowerShell)
 
-### macOS
-
-**Option A — Recommended (no sudo needed):**
-```bash
-mkdir -p ~/.npm-global
-npm config set prefix '~/.npm-global'
-echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.zshrc
-source ~/.zshrc
-npm install -g github:mueid288/nybbl
-```
-
-**Option B — Quick (requires sudo):**
-```bash
-sudo npm install -g github:mueid288/nybbl
-```
-
----
-
-### Windows
-
-Open **PowerShell as Administrator** and run:
 ```powershell
-npm install -g github:mueid288/nybbl
+git clone https://github.com/mueid288/nybbl.git
+cd nybbl
+npm install
+npm run build
+npm link
 ```
-
-> **Tip:** If you get an execution policy error, run this first:
-> ```powershell
-> Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
-> ```
-
----
-
-### Linux
-
-```bash
-sudo npm install -g github:mueid288/nybbl
-```
-
-Or without sudo (recommended):
-```bash
-mkdir -p ~/.npm-global
-npm config set prefix '~/.npm-global'
-echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.bashrc
-source ~/.bashrc
-npm install -g github:mueid288/nybbl
-```
-
----
 
 ### First Run
 
@@ -88,68 +51,18 @@ npm install -g github:mueid288/nybbl
 nybbl
 ```
 
-The setup wizard will ask for your name, handle, and automatically clone the shared data repo. Your config is saved to `~/.nybblrc`.
+The setup wizard will ask for your name, handle, and automatically clone the shared data repo.
 
 ---
 
 ### Troubleshooting
 
-<details>
-<summary><strong>macOS: "permission denied" when running nybbl</strong></summary>
-
-```bash
-sudo chmod +x /usr/local/lib/node_modules/nybbl/bin/run.js
-```
-
-Or reinstall without sudo using the recommended Option A above.
-</details>
-
-<details>
-<summary><strong>Windows: "nybbl is not recognized as a command"</strong></summary>
-
-npm's global bin folder may not be in your PATH. Fix it:
-
-```powershell
-# 1. Find npm's global folder
-npm config get prefix
-
-# 2. Add it to PATH permanently
-$npmPath = npm config get prefix
-[Environment]::SetEnvironmentVariable("Path", "$env:Path;$npmPath", "User")
-```
-
-Close and reopen PowerShell, then run `nybbl`.
-
-**Quick workaround** (no PATH change needed):
-```powershell
-npx nybbl
-```
-</details>
-
-<details>
-<summary><strong>Windows: "execution policy" error</strong></summary>
-
-```powershell
-Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
-```
-
-Then retry the install.
-</details>
-
-<details>
-<summary><strong>Any OS: "EACCES permission denied"</strong></summary>
-
-Don't use `sudo` for global npm installs. Instead, set a user-owned prefix:
-
-```bash
-mkdir -p ~/.npm-global
-npm config set prefix '~/.npm-global'
-# Add to your shell profile (~/.zshrc, ~/.bashrc, etc.)
-echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.zshrc
-source ~/.zshrc
-npm install -g github:mueid288/nybbl
-```
-</details>
+| Problem | Fix |
+|---------|-----|
+| `permission denied` on macOS | Run `sudo npm link` instead of `npm link` |
+| `nybbl not recognized` on Windows | Close and reopen PowerShell after `npm link` |
+| `execution policy` error on Windows | Run `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned` |
+| `tsc: command not found` | Run `npm install` first — TypeScript is included |
 
 ## 📸 Dashboard
 
@@ -255,16 +168,6 @@ nybbl-data/
 ```
 
 Every command automatically **pulls** the latest data before reading and **pushes** after writing — so your whole team stays in sync through Git.
-
-## 🛠️ Dev Setup
-
-```bash
-git clone https://github.com/mueid288/nybbl.git
-cd nybbl
-npm install
-npm run build
-npm link
-```
 
 ## 📄 License
 
