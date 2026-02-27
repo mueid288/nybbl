@@ -8,6 +8,11 @@
   "bin": {
     "nybbl": "./bin/run.js"
   },
+  "files": [
+    "bin/",
+    "dist/",
+    "package.json"
+  ],
   "scripts": {
     "build": "npx -y rimraf dist && tsc -b",
     "clean": "rm -rf dist",
