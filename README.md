@@ -1,67 +1,152 @@
-# nybbl
+# nybbl 🧩
 
-Take a byte out of the boring stuff. 🧩
+> Take a byte out of the boring stuff.
 
-A CLI tool for the Nybbl Venture team to track hours, jobs, and daily pulse updates right from your terminal.
+A beautiful CLI tool for teams to track hours, log standups, and stay in sync — right from your terminal.
 
-## Setup & First Run
+## ✨ Features
 
-Before you start, make sure you have cloned the shared `nybbl-data` repository to your local machine:
-\`\`\`sh
-git clone git@github.com:nybbl-venture/nybbl-data.git ~/nybbl-data
-\`\`\`
+| Feature | Description |
+|---------|-------------|
+| ⏱️ **Time Tracking** | Start/stop timers or log hours manually |
+| 🧍 **Daily Standups** | Yesterday / Today / Blockers — once per day |
+| 📊 **Burndown Chart** | ASCII chart of hours logged this week |
+| 🏆 **Achievements** | 10 unlockable badges for milestones |
+| 👥 **Teams** | Members grouped by shared job |
+| 🚨 **Blocker Alerts** | See teammate blockers on your dashboard |
+| 🔥 **Streaks** | Color-coded activity streaks |
+| ☀️ **Smart Greetings** | Time-of-day welcome messages |
+| 🔄 **Auto Sync** | Git-based data sync with animated spinners |
 
-Install the CLI globally (assuming you build it or link it):
-\`\`\`sh
+## 🚀 Install
+
+```bash
+npm install -g github:mueid288/nybbl
+```
+
+Then just run:
+
+```bash
+nybbl
+```
+
+The setup wizard handles everything — name, handle, and auto-cloning the shared data repo.
+
+## 📸 Dashboard
+
+```
+  ███╗   ██╗██╗   ██╗██████╗ ██████╗ ██╗
+  ████╗  ██║╚██╗ ██╔╝██╔══██╗██╔══██╗██║
+  ██╔██╗ ██║ ╚████╔╝ ██████╔╝██████╔╝██║
+  ██║╚██╗██║  ╚██╔╝  ██╔══██╗██╔══██╗██║
+  ██║ ╚████║   ██║   ██████╔╝██████╔╝███████╗
+  ╚═╝  ╚═══╝   ╚═╝   ╚═════╝ ╚═════╝ ╚══════╝
+
+  ✔ Data synced
+  ☀️ Good morning, @mueid!
+
+  │ 🟢 Online · 📋 1 job · 🔥 4 · ⏱ 24m 16s │
+
+  ── Work ────────────────────────
+    ⏱️  Track time
+    🧍  Daily standup
+    💬  Log an update
+  ── Insights ────────────────────
+    📊  Burndown chart
+    📈  View report
+    🏆  My badges
+  ── Team ────────────────────────
+    📜  View standups
+    👥  My team
+    🌐  Team status
+```
+
+## 📖 Commands
+
+### Work
+| Command | Description |
+|---------|-------------|
+| `nybbl track start` | Start a timer (interactive job picker) |
+| `nybbl track stop` | Stop timer and log the hours |
+| `nybbl track add` | Manually log past hours |
+| `nybbl track log` | View your time log history |
+| `nybbl standup` | Log your daily standup |
+| `nybbl pulse` | Post a quick update |
+
+### Insights
+| Command | Description |
+|---------|-------------|
+| `nybbl burndown` | ASCII chart of hours this week |
+| `nybbl report` | Hours/metrics report (--today, --week, --month) |
+| `nybbl badges` | View your achievements and unlocked badges |
+
+### Team
+| Command | Description |
+|---------|-------------|
+| `nybbl standup view` | See today's standups from everyone |
+| `nybbl team` | View teams grouped by job |
+| `nybbl status` | Full team status matrix |
+| `nybbl leaderboard` | Weekly leaderboard rankings |
+
+### Manage
+| Command | Description |
+|---------|-------------|
+| `nybbl job add` | Create a new job |
+| `nybbl job list` | List all jobs |
+| `nybbl job info <id>` | View job details |
+| `nybbl assign <handle> <job>` | Assign a member to a job |
+| `nybbl member add` | Add a teammate |
+| `nybbl member list` | List all members |
+
+### Fun
+| Command | Description |
+|---------|-------------|
+| `nybbl streak` | View your activity streak 🔥 |
+| `nybbl motivation` | Get a dev quote |
+| `nybbl vibes` | See who's grinding and who's chilling |
+
+## 🏆 Achievements
+
+| Badge | Name | How to Unlock |
+|-------|------|---------------|
+| 🏅 | First Pulse | Log your first update |
+| ⏰ | Time Keeper | Log time for the first time |
+| 🔥 | On a Roll | 3-day streak |
+| ⚔️ | Weekly Warrior | 7-day streak |
+| 💪 | Unstoppable | 14-day streak |
+| 🚀 | Getting Started | 10+ hours logged |
+| 💎 | Dedicated | 50+ hours logged |
+| 💯 | 100 Hours Club | 100+ hours logged |
+| 💬 | Communicator | 10+ pulse updates |
+| 📢 | Town Crier | 50+ pulse updates |
+
+## 🔧 How It Works
+
+All data lives in a shared Git repo (`nybbl-data`):
+
+```
+nybbl-data/
+├── members.json        # Team members
+├── jobs.json           # Projects / ventures
+├── assignments.json    # Who works on what
+├── timelogs/
+│   └── mueid.json      # Per-member time entries
+└── updates/
+    └── 2026-02-27.json # Daily pulse updates & standups
+```
+
+Every command automatically **pulls** the latest data before reading and **pushes** after writing — so your whole team stays in sync through Git.
+
+## 🛠️ Dev Setup
+
+```bash
+git clone https://github.com/mueid288/nybbl.git
+cd nybbl
 npm install
 npm run build
 npm link
-\`\`\`
+```
 
-Run the setup wizard:
-\`\`\`sh
-nybbl
-\`\`\`
-It will prompt you for your name, a handle, and the location of your data repo. Your configuration is saved to `~/.nybblrc`.
+## 📄 License
 
-## Usage & Commands
-
-Typing \`nybbl\` natively boots up your dashboard where you can see your active jobs and an interactive menu.
-
-**Jobs:**
-- \`nybbl job add\` — Add a new job
-- \`nybbl job list\` — List all active jobs
-- \`nybbl job info <id>\` — View details and assigned members
-- \`nybbl job edit <id>\` — Edit a job
-- \`nybbl job archive <id>\` — Archive an old job
-- \`nybbl job delete <id>\` — Delete a job completely
-
-**Members:**
-- \`nybbl member add\` — Re-register a member or add a teammate
-- \`nybbl member list\` — List everyone on the team
-- \`nybbl member remove <handle>\` — Delete a member
-
-**Assignments:**
-- \`nybbl assign <handle> <jobId>\` — Put a member on a job
-- \`nybbl unassign <handle> <jobId>\` — Kick a member off a job
-- \`nybbl whoami\` — Show your own assignments and job details
-
-**Time Tracking:**
-- \`nybbl track start <jobId>\` — Start a live timer for a job
-- \`nybbl track stop\` — Stop the live timer and log hours
-- \`nybbl track add 1h30m --job <jobId>\` — Manually log past hours
-- \`nybbl track log\` — See your personal time log history
-
-**Updates & Sync:**
-- \`nybbl pulse\` — Interactively log a daily progress update
-- \`nybbl pulse log\` — See all team pulse updates
-- \`nybbl status\` — See a full matrix of who's doing what
-- \`nybbl report\` — Generate hours/metrics over time (supports --today, --week, --month, --export)
-
-**Fun:**
-- \`nybbl leaderboard\` — Weekly leaderboard rankings!
-- \`nybbl streak\` — View your current coding streak!
-- \`nybbl motivation\` — Get a quick developer quote.
-- \`nybbl vibes\` — See who is burning the midnight oil and who's slacking.
-
-Everything automatically synchronizes via Git in the background!
+MIT

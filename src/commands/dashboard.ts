@@ -1,7 +1,7 @@
 import { Command } from '@oclif/core';
-import { select } from '@inquirer/prompts';
+import { select, Separator } from '@inquirer/prompts';
 import { readIdentity } from '../lib/identity.js';
-import { printLogo, createTable, getWelcomeMessage, formatElapsedTimer, printStatusBar, menuSeparator, formatStreak, colorMember } from '../lib/display.js';
+import { printLogo, createTable, getWelcomeMessage, formatElapsedTimer, printStatusBar, formatStreak, colorMember } from '../lib/display.js';
 import { syncPull } from '../lib/sync.js';
 import { getAssignments, getJobs, getUpdates, getMembers } from '../lib/store.js';
 import { getActiveTimer } from '../lib/timer.js';
@@ -96,27 +96,27 @@ export default class Dashboard extends Command {
                 : { name: '⏱️  Track time', value: 'track:start' };
 
             const choices = [
-                menuSeparator('Work'),
+                new Separator(chalk.hex('#555')(`── ${chalk.hex('#06d6a0')('Work')} ${'─'.repeat(28)}`)),
                 timerChoice,
                 { name: '🧍  Daily standup', value: 'standup' },
                 { name: '💬  Log an update', value: 'pulse' },
 
-                menuSeparator('Insights'),
+                new Separator(chalk.hex('#555')(`── ${chalk.hex('#06d6a0')('Insights')} ${'─'.repeat(24)}`)),
                 { name: '📊  Burndown chart', value: 'burndown' },
                 { name: '📈  View report', value: 'report' },
                 { name: '🏆  My badges', value: 'badges' },
 
-                menuSeparator('Team'),
+                new Separator(chalk.hex('#555')(`── ${chalk.hex('#06d6a0')('Team')} ${'─'.repeat(28)}`)),
                 { name: '📜  View standups', value: 'standup:view' },
                 { name: '👥  My team', value: 'team' },
                 { name: '🌐  Team status', value: 'status' },
 
-                menuSeparator('Manage'),
+                new Separator(chalk.hex('#555')(`── ${chalk.hex('#06d6a0')('Manage')} ${'─'.repeat(26)}`)),
                 { name: '📋  My jobs', value: 'whoami' },
                 { name: '➕  Add a job', value: 'job:add' },
                 { name: '👤  Manage members', value: 'member:add' },
 
-                menuSeparator(''),
+                new Separator(chalk.hex('#555')('─'.repeat(34))),
                 { name: chalk.hex('#e63946')('❌  Exit'), value: 'exit' }
             ];
 
@@ -130,8 +130,6 @@ export default class Dashboard extends Command {
                 this.log(chalk.gray('\n  👋 See you later!\n'));
                 process.exit(0);
             }
-
-            if (action === '__sep__') continue;
 
             // Execute the chosen command — catch errors so the loop doesn't die
             try {
