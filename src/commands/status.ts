@@ -1,7 +1,7 @@
 import { Command, Args } from '@oclif/core';
 import { getMembers, getJobs, getUpdates, getAllTimelogs, getAssignments } from '../lib/store.js';
 import { syncPull } from '../lib/sync.js';
-import { createTable } from '../lib/display.js';
+import { createTable, colorMember } from '../lib/display.js';
 import chalk from 'chalk';
 
 export default class Status extends Command {
@@ -73,7 +73,7 @@ export default class Status extends Command {
             }
 
             table.push([
-                chalk.cyan(member.handle),
+                colorMember(member.handle),
                 currentJobName,
                 hoursStr,
                 lastUpdate

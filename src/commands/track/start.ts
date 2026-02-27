@@ -5,6 +5,7 @@ import { readIdentity } from '../../lib/identity.js';
 import { syncPull } from '../../lib/sync.js';
 import { getActiveTimer, setActiveTimer } from '../../lib/timer.js';
 import { printSuccess, printError } from '../../lib/display.js';
+import chalk from 'chalk';
 
 export default class Start extends Command {
     static description = 'Start a timer for a job';
@@ -65,5 +66,21 @@ export default class Start extends Command {
 
         const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         printSuccess(`Timer started for "${job!.name}" at ${timeStr}`);
+
+        // Show a brief live ticking display
+        this.log(chalk.gray('  Timer is running... (go back to dashboard to stop)'));
+        await new Promise<void>((resolve) => {
+            let ticks = 0;
+            const interval = setInterval(() => {
+                ticks++;
+                const elapsed = `${ticks}s`;
+                process.stdout.write(`\r  ${chalk.hex('#06d6a0')('⏱')}  ${chalk.bold.hex('#06d6a0')(elapsed)} elapsed`);
+                if (ticks >= 3) {
+                    clearInterval(interval);
+                    process.stdout.write('\n\n');
+                    resolve();
+                }
+            }, 1000);
+        });
     }
 }

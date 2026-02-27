@@ -1,6 +1,6 @@
 import { simpleGit, SimpleGit } from 'simple-git';
 import { readIdentity } from './identity.js';
-import { printWarning } from './display.js';
+import { createSpinner } from './display.js';
 
 export async function getGit(): Promise<SimpleGit> {
     const id = await readIdentity();
@@ -10,22 +10,28 @@ export async function getGit(): Promise<SimpleGit> {
 }
 
 export async function syncPull(): Promise<void> {
+    const spinner = createSpinner('Syncing latest data...');
     try {
+        spinner.start();
         const git = await getGit();
         const isRepo = await git.checkIsRepo();
         if (!isRepo) throw new Error('Data repository is not a valid git repository.');
 
-        // We try to pull (fast-forward or merge).
-        // If it fails due to offline or conflicts, we warn.
         await git.pull();
+        spinner.succeed('Data synced');
     } catch (err: any) {
-        if (err.message.includes('Identity not configured')) throw err;
-        printWarning('Could not sync (pull) from remote repo. Continuing with local data.');
+        if (err.message.includes('Identity not configured')) {
+            spinner.stop();
+            throw err;
+        }
+        spinner.warn('Offline — using local data');
     }
 }
 
 export async function syncPush(message: string): Promise<void> {
+    const spinner = createSpinner('Saving to cloud...');
     try {
+        spinner.start();
         const id = await readIdentity();
         const git = await getGit();
 
@@ -38,7 +44,8 @@ export async function syncPush(message: string): Promise<void> {
         await git.add('./*');
         await git.commit(message);
         await git.push();
+        spinner.succeed('Saved & synced');
     } catch (err: any) {
-        printWarning('Could not sync (push). Changes saved locally. Will retry on next command.');
+        spinner.warn('Saved locally — will sync later');
     }
 }

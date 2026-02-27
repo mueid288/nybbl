@@ -1,9 +1,9 @@
 import { Command } from '@oclif/core';
 import { select } from '@inquirer/prompts';
 import { readIdentity } from '../lib/identity.js';
-import { printLogo, createTable } from '../lib/display.js';
+import { printLogo, createTable, getWelcomeMessage, formatElapsedTimer, printStatusBar, menuSeparator, formatStreak, colorMember } from '../lib/display.js';
 import { syncPull } from '../lib/sync.js';
-import { getAssignments, getJobs } from '../lib/store.js';
+import { getAssignments, getJobs, getUpdates, getMembers } from '../lib/store.js';
 import { getActiveTimer } from '../lib/timer.js';
 import Setup from './setup.js';
 import { execute } from '@oclif/core';
@@ -26,18 +26,33 @@ export default class Dashboard extends Command {
         try {
             await syncPull();
         } catch (e: any) {
-            // syncPull already logs a warning, continue.
+            // syncPull already shows spinner warning, continue.
         }
 
         const assignments = await getAssignments();
         const jobs = await getJobs();
+        const members = await getMembers();
+        const me = members.find(m => m.handle === identity.handle);
 
         const myAssignments = assignments.filter(a => a.member === identity.handle);
         const activeJobs = myAssignments.map(a => jobs.find(j => j.id === a.job)).filter(Boolean);
 
-        this.log(chalk.hex('#06d6a0')(`  👋 Hey ${chalk.bold(identity.handle)}!`) + chalk.gray(` You're on ${activeJobs.length} active job${activeJobs.length !== 1 ? 's' : ''}.`));
+        // ─── Welcome + Status Bar ───
+        this.log(getWelcomeMessage(identity.handle));
         this.log('');
 
+        const activeTimer = await getActiveTimer();
+        const statusParts: string[] = [
+            chalk.hex('#06d6a0')('🟢 Online'),
+            `📋 ${activeJobs.length} job${activeJobs.length !== 1 ? 's' : ''}`,
+            formatStreak(me?.streak || 0),
+        ];
+        if (activeTimer) {
+            statusParts.push(formatElapsedTimer(activeTimer.startTime));
+        }
+        printStatusBar(statusParts);
+
+        // ─── Jobs Table ───
         if (activeJobs.length > 0) {
             const table = createTable(['Job', 'Client', 'Role']);
             for (const job of activeJobs) {
@@ -52,25 +67,57 @@ export default class Dashboard extends Command {
             this.log('');
         }
 
-        // Keep looping until the user explicitly chooses Exit
-        while (true) {
-            const activeTimer = await getActiveTimer();
+        // ─── Blocker Notifications ───
+        const todayStr = new Date().toISOString().split('T')[0];
+        const todayUpdates = await getUpdates(todayStr);
+        const blockers = todayUpdates.filter(
+            u => u.blocker && u.blocker.trim() !== '' && u.member !== identity.handle
+        );
 
-            // Build choices dynamically based on timer state
-            const timerChoice = activeTimer
-                ? { name: chalk.yellow(`⏹️  Stop timer (${activeTimer.job})`), value: 'track:stop' }
+        if (blockers.length > 0) {
+            this.log(chalk.hex('#e63946').bold('  🚨 Teammate Blockers:'));
+            for (const b of blockers) {
+                const job = jobs.find(j => j.id === b.job);
+                this.log(
+                    `    ${chalk.hex('#e63946')('●')} ${colorMember(b.member)} ` +
+                    chalk.gray(`(${job?.name || b.job})`) +
+                    `: ${chalk.hex('#f4a261')(b.blocker!)}`
+                );
+            }
+            this.log('');
+        }
+
+        // ─── Main Menu Loop ───
+        while (true) {
+            const timer = await getActiveTimer();
+
+            const timerChoice = timer
+                ? { name: chalk.yellow(`⏹️  Stop timer`) + chalk.gray(` — ${timer.job} ${formatElapsedTimer(timer.startTime)}`), value: 'track:stop' }
                 : { name: '⏱️  Track time', value: 'track:start' };
 
             const choices = [
+                menuSeparator('Work'),
                 timerChoice,
-                { name: '📋  My jobs', value: 'whoami' },
-                { name: '👥  My team', value: 'team' },
-                { name: '📊  View report', value: 'report' },
+                { name: '🧍  Daily standup', value: 'standup' },
                 { name: '💬  Log an update', value: 'pulse' },
+
+                menuSeparator('Insights'),
+                { name: '📊  Burndown chart', value: 'burndown' },
+                { name: '📈  View report', value: 'report' },
+                { name: '🏆  My badges', value: 'badges' },
+
+                menuSeparator('Team'),
+                { name: '📜  View standups', value: 'standup:view' },
+                { name: '👥  My team', value: 'team' },
                 { name: '🌐  Team status', value: 'status' },
+
+                menuSeparator('Manage'),
+                { name: '📋  My jobs', value: 'whoami' },
                 { name: '➕  Add a job', value: 'job:add' },
                 { name: '👤  Manage members', value: 'member:add' },
-                { name: '❌  Exit', value: 'exit' }
+
+                menuSeparator(''),
+                { name: chalk.hex('#e63946')('❌  Exit'), value: 'exit' }
             ];
 
             const action = await select({
@@ -80,8 +127,11 @@ export default class Dashboard extends Command {
             });
 
             if (action === 'exit') {
+                this.log(chalk.gray('\n  👋 See you later!\n'));
                 process.exit(0);
             }
+
+            if (action === '__sep__') continue;
 
             // Execute the chosen command — catch errors so the loop doesn't die
             try {

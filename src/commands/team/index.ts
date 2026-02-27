@@ -3,7 +3,7 @@ import { getJobs, getAssignments, getMembers, getTimelogs, getUpdates } from '..
 import { readIdentity } from '../../lib/identity.js';
 import { syncPull } from '../../lib/sync.js';
 import chalk from 'chalk';
-import { createTable } from '../../lib/display.js';
+import { createTable, formatStreak, colorMember } from '../../lib/display.js';
 
 export default class Team extends Command {
     static description = 'View all teams and their members';
@@ -42,10 +42,10 @@ export default class Team extends Command {
                     ? memberUpdates[memberUpdates.length - 1].message
                     : chalk.gray('(no updates today)');
 
-                const isMe = identity && member!.handle === identity.handle;
-                const nameStr = isMe ? chalk.green(`${member!.handle} ★`) : member!.handle;
+                const isMe = !!(identity && member!.handle === identity.handle);
+                const nameStr = colorMember(member!.handle, isMe);
 
-                table.push([nameStr, `🔥 ${member!.streak}`, lastUpdate]);
+                table.push([nameStr, formatStreak(member!.streak), lastUpdate]);
             }
 
             this.log(table.toString());
