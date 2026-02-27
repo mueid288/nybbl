@@ -90,6 +90,67 @@ nybbl
 
 The setup wizard will ask for your name, handle, and automatically clone the shared data repo. Your config is saved to `~/.nybblrc`.
 
+---
+
+### Troubleshooting
+
+<details>
+<summary><strong>macOS: "permission denied" when running nybbl</strong></summary>
+
+```bash
+sudo chmod +x /usr/local/lib/node_modules/nybbl/bin/run.js
+```
+
+Or reinstall without sudo using the recommended Option A above.
+</details>
+
+<details>
+<summary><strong>Windows: "nybbl is not recognized as a command"</strong></summary>
+
+npm's global bin folder may not be in your PATH. Fix it:
+
+```powershell
+# 1. Find npm's global folder
+npm config get prefix
+
+# 2. Add it to PATH permanently
+$npmPath = npm config get prefix
+[Environment]::SetEnvironmentVariable("Path", "$env:Path;$npmPath", "User")
+```
+
+Close and reopen PowerShell, then run `nybbl`.
+
+**Quick workaround** (no PATH change needed):
+```powershell
+npx nybbl
+```
+</details>
+
+<details>
+<summary><strong>Windows: "execution policy" error</strong></summary>
+
+```powershell
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned
+```
+
+Then retry the install.
+</details>
+
+<details>
+<summary><strong>Any OS: "EACCES permission denied"</strong></summary>
+
+Don't use `sudo` for global npm installs. Instead, set a user-owned prefix:
+
+```bash
+mkdir -p ~/.npm-global
+npm config set prefix '~/.npm-global'
+# Add to your shell profile (~/.zshrc, ~/.bashrc, etc.)
+echo 'export PATH=~/.npm-global/bin:$PATH' >> ~/.zshrc
+source ~/.zshrc
+npm install -g github:mueid288/nybbl
+```
+</details>
+
 ## 📸 Dashboard
 
 ```
